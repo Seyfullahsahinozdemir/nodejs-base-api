@@ -94,5 +94,5 @@ function onListening() {
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 
-  sequelize.sync();
+  sequelize.sync({ force: true });
 }

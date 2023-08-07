@@ -12,6 +12,6 @@ const RolePrivileges = sequelize.define("role-privileges", {
   },
 });
 
-Roles.hasOne(RolePrivileges, { foreignKey: "roleId" });
+//Roles.hasOne(RolePrivileges, { foreignKey: "roleId" });
 
 module.exports = RolePrivileges;

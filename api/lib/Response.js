@@ -13,12 +13,24 @@ class Response {
 
   static errorResponse(error) {
     console.log(error);
+
     if (error instanceof CustomError) {
       return {
         code: error.code,
         error: {
           message: error.message,
           description: error.description,
+        },
+      };
+    } else if (
+      error.original?.errno != undefined &&
+      error.original?.errno == 1062
+    ) {
+      return {
+        code: Enum.HTTP_CODES.CONFLICT,
+        error: {
+          message: "Already exist a role with this name",
+          description: "Already exist a role with this name",
         },
       };
     }

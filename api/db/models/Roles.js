@@ -1,10 +1,12 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../Database");
+const RolePrivileges = require("./RolePrivileges");
 
 const Roles = sequelize.define("role", {
-  role_name: {
+  roleName: {
     type: Sequelize.STRING,
     allowNull: false,
+    unique: true,
   },
   isActive: {
     type: Sequelize.BOOLEAN,
@@ -15,5 +17,7 @@ const Roles = sequelize.define("role", {
     allowNull: true,
   },
 });
+
+Roles.hasMany(RolePrivileges, { foreignKey: "roleId", onDelete: "CASCADE" });
 
 module.exports = Roles;

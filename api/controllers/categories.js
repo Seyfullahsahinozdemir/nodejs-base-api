@@ -40,8 +40,9 @@ exports.addCategory = async (req, res, next) => {
 
 exports.updateCategory = async (req, res, next) => {
   let body = req.body;
+  let { _id } = req.params;
   try {
-    if (!body._id)
+    if (!_id)
       throw new CustomError(
         Enum.HTTP_CODES.BAD_REQUEST,
         "Validation Error",
@@ -51,7 +52,7 @@ exports.updateCategory = async (req, res, next) => {
     let updates = {};
     if (body.name) updates.name = body.name;
     if (typeof body.isActive === "boolean") updates.isActive = body.isActive;
-    await Categories.update(updates, { where: { id: body._id } });
+    await Categories.update(updates, { where: { id: _id } });
     res.json(Response.successResponse({ success: true }));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);
