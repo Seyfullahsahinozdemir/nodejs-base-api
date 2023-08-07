@@ -29,8 +29,8 @@ class Response {
       return {
         code: Enum.HTTP_CODES.CONFLICT,
         error: {
-          message: "Already exist a role with this name",
-          description: "Already exist a role with this name",
+          message: "Already exist an entry with this name",
+          description: "Already exist an entry with this name",
         },
       };
     }

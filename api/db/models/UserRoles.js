@@ -5,11 +5,7 @@ const Roles = require("./Roles");
 
 const UserRoles = sequelize.define("user_roles", {});
 
-Users.belongsToMany(Roles, {
-  through: UserRoles,
-});
-Roles.belongsToMany(Users, {
-  through: UserRoles,
-});
+Roles.hasMany(UserRoles, { foreignKey: "roleId" });
+Users.hasMany(UserRoles, { foreignKey: "userId" });
 
 module.exports = UserRoles;
