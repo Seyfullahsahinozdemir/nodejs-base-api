@@ -2,6 +2,7 @@ const Categories = require("../db/models/Categories");
 const Response = require("../lib/Response");
 const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
+const AuditLogs = require("../lib/AuditLogs");
 
 exports.findAll = async (req, res, next) => {
   try {
@@ -30,6 +31,8 @@ exports.addCategory = async (req, res, next) => {
       createdBy: req.user?.id,
     });
 
+    AuditLogs.info(req.user?.email, "Categories", "Add", { category });
+
     res.json(Response.successResponse({ success: true }));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);
@@ -53,6 +56,12 @@ exports.updateCategory = async (req, res, next) => {
     if (body.name) updates.name = body.name;
     if (typeof body.isActive === "boolean") updates.isActive = body.isActive;
     await Categories.update(updates, { where: { id: _id } });
+
+    AuditLogs.info(req.user?.email, "Categories", "Update", {
+      _id: body._id,
+      ...updates,
+    });
+
     res.json(Response.successResponse({ success: true }));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);
@@ -72,6 +81,9 @@ exports.deleteCategory = async (req, res, next) => {
       );
 
     await Categories.destroy({ where: { id: params._id } });
+
+    AuditLogs.info(req.user?.email, "Categories", "Delete", { _id: body._id });
+
     res.json(Response.successResponse({ success: true }));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);

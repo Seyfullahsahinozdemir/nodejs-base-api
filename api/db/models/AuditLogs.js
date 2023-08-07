@@ -14,6 +14,9 @@ const AuditLogs = sequelize.define("audit_logs", {
   procType: {
     type: Sequelize.STRING,
   },
+  log: {
+    type: Sequelize.JSON,
+  },
 });
 
 module.exports = AuditLogs;
