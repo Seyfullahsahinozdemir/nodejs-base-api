@@ -18,9 +18,9 @@ router.all("*", authLib.authenticate(), (req, res, next) => {
   next();
 });
 
-router.get("/", findAll);
-router.post("/add", addUser);
-router.put("/update/:_id", updateUser);
-router.delete("/delete/:_id", deleteUser);
+router.get("/", authLib.checkRoles("user_view"), findAll);
+router.post("/add", authLib.checkRoles("user_add"), addUser);
+router.put("/update/:_id", authLib.checkRoles("user_update"), updateUser);
+router.delete("/delete/:_id", authLib.checkRoles("user_delete"), deleteUser);
 
 module.exports = router;

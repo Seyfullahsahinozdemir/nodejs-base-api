@@ -13,7 +13,6 @@ class Response {
 
   static errorResponse(error) {
     console.log(error);
-
     if (error instanceof CustomError) {
       return {
         code: error.code,
