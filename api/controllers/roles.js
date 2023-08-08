@@ -79,14 +79,14 @@ exports.updateRole = async (req, res, next) => {
       Array.isArray(body.permissions) &&
       body.permissions.length > 0
     ) {
-      let rolePrivs = await RolePrivileges.findOne({ where: { id: body._id } });
+      await RolePrivileges.findOne({ where: { id: body._id } });
 
-      let removedPermissions = permissions.filter(
+      let removedPermissions = body.permissions.filter(
         (x) => !body.permissions.includes(x.permission)
       );
 
       let newPermissions = body.permissions.filter(
-        (x) => !permissions.map((p) => p.permission).includes(x)
+        (x) => !body.permissions.map((p) => p.permission).includes(x)
       );
 
       if (removedPermissions.length > 0) {
@@ -97,7 +97,7 @@ exports.updateRole = async (req, res, next) => {
 
       if (newPermissions.length > 0) {
         for (let i = 0; i < newPermissions.length; i++) {
-          let priv = await RolePrivileges.create({
+          await RolePrivileges.create({
             roleId: body._id,
             permission: newPermissions[i],
             createdBy: req.user?.id,

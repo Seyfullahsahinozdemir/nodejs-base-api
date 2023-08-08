@@ -84,7 +84,9 @@ exports.deleteCategory = async (req, res, next) => {
 
     await Categories.destroy({ where: { id: params._id } });
 
-    AuditLogs.info(req.user?.email, "Categories", "Delete", { _id: body._id });
+    AuditLogs.info(req.user?.email, "Categories", "Delete", {
+      _id: params._id,
+    });
 
     res.json(Response.successResponse({ success: true }));
   } catch (error) {

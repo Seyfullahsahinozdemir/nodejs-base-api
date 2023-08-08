@@ -6,6 +6,9 @@ const bcrypt = require("bcrypt");
 const is = require("is_js");
 const UserRoles = require("../db/models/UserRoles");
 const Roles = require("../db/models/Roles");
+const config = require("../config");
+
+const jwt = require("jwt-simple");
 
 exports.findAll = async (req, res, next) => {
   try {
@@ -169,7 +172,7 @@ exports.deleteUser = async (req, res, next) => {
       );
 
     await Users.destroy({ where: { id: params._id } });
-    await UserRoles.destroy({ where: { userId: body._id } });
+    await UserRoles.destroy({ where: { userId: params._id } });
     res.json(Response.successResponse({ success: true }));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);
@@ -242,6 +245,55 @@ exports.register = async (req, res, next) => {
       .json(
         Response.successResponse({ success: true }, Enum.HTTP_CODES.CREATED)
       );
+  } catch (error) {
+    let errorResponse = Response.errorResponse(error);
+    res.status(errorResponse.code).json(errorResponse);
+  }
+};
+
+exports.auth = async (req, res, next) => {
+  try {
+    let { email, password } = req.body;
+
+    if (
+      typeof password !== "string" ||
+      password.length < Enum.PASS_LENGTH ||
+      is.not.email(email)
+    )
+      throw new CustomError(
+        Enum.HTTP_CODES.UNAUTHORIZED,
+        "Validation Error",
+        "email or password wrong"
+      );
+
+    let user = await Users.findOne({ where: { email: email } });
+    if (!user)
+      throw new CustomError(
+        Enum.HTTP_CODES.UNAUTHORIZED,
+        "Validation Error",
+        "email or password wrong"
+      );
+
+    if (!bcrypt.compareSync(password, user.password))
+      throw new CustomError(
+        Enum.HTTP_CODES.UNAUTHORIZED,
+        "Validation error",
+        "Email or password Wrong"
+      );
+
+    let payload = {
+      id: user.id,
+      exp: parseInt(Date.now() / 1000) * config.JWT.EXPIRE_TIME,
+    };
+
+    let userData = {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+    };
+
+    let token = jwt.encode(payload, config.JWT.SECRET);
+    res.json(Response.successResponse({ token, user: { userData } }));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);
     res.status(errorResponse.code).json(errorResponse);

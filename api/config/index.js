@@ -6,4 +6,10 @@ module.exports = {
   DB_HOST: process.env.DB_HOST,
   DB_DIALECT: process.env.DB_DIALECT,
   PORT: process.env.PORT || "3000",
+  JWT: {
+    SECRET: "123456",
+    EXPIRE_TIME: !isNaN(parseInt(process.env.TOKEN_EXPIRE_TIME))
+      ? parseInt(process.env.TOKEN_EXPIRE_TIME)
+      : 24 * 60 * 60,
+  },
 };
