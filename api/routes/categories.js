@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+const auth = require("../lib/auth")();
 
 const {
   findAll,
@@ -8,7 +9,9 @@ const {
   deleteCategory,
 } = require("../controllers/categories");
 
-/* GET users listing. */
+router.all("*", auth.authenticate(), (req, res, next) => {
+  next();
+});
 router.get("/", findAll);
 router.post("/add", addCategory);
 router.put("/update", updateCategory);
