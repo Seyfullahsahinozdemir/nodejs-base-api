@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../Database");
+const { DEFAULT_LANG } = require("../../config");
 
 const User = sequelize.define("user", {
   firstName: {
@@ -29,6 +30,10 @@ const User = sequelize.define("user", {
   },
   phoneNumber: {
     type: Sequelize.STRING,
+  },
+  language: {
+    type: Sequelize.STRING,
+    defaultValue: DEFAULT_LANG,
   },
 });
 

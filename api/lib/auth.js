@@ -36,6 +36,7 @@ module.exports = function () {
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
+            language: user.language,
             exp: parseInt(Date.now() / 1000) * config.JWT,
           });
         } else {

@@ -4,7 +4,8 @@ const CustomError = require("../lib/Error");
 const Enum = require("../config/Enum");
 const AuditLogs = require("../lib/AuditLogs");
 const logger = require("../lib/logger/LoggerClass");
-
+const config = require("../config");
+const i18n = new (require("../lib/i18n"))(config.DEFAULT_LANG);
 exports.findAll = async (req, res, next) => {
   try {
     let categories = await Categories.findAll();
@@ -22,8 +23,10 @@ exports.addCategory = async (req, res, next) => {
     if (!body.name)
       throw new CustomError(
         Enum.HTTP_CODES.BAD_REQUEST,
-        "Validation Error",
-        "name cannot be empty"
+        i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language),
+        i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, [
+          "name",
+        ])
       );
 
     const category = await Categories.create({
