@@ -6,6 +6,8 @@ const AuditLogs = require("../lib/AuditLogs");
 const logger = require("../lib/logger/LoggerClass");
 const config = require("../config");
 const i18n = new (require("../lib/i18n"))(config.DEFAULT_LANG);
+const emitter = require("../lib/Emitter");
+
 exports.findAll = async (req, res, next) => {
   try {
     let categories = await Categories.findAll();
@@ -37,6 +39,9 @@ exports.addCategory = async (req, res, next) => {
 
     AuditLogs.info(req.user?.email, "Categories", "Add", { category });
     logger.info(req.user?.email, "Categories", "Add", category);
+    emitter
+      .getEmitter("notifications")
+      .emit("messages", { message: category.name + " is added." });
 
     res.json(Response.successResponse({ success: true }));
   } catch (error) {
